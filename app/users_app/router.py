@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.models import UserRole, Users
-from app.schemas import UserCreate, UserReturn
+from app.users_app.models import UserRole, Users
+from app.users_app.schemas import UserCreate, UserReturn
 from database import get_db
 
 router = APIRouter(tags=["Users Management"], prefix="/users")
@@ -30,7 +30,7 @@ def user_check(user_id, db: Session):
 
 
 @router.post("/create-admin/", response_model=UserReturn)
-def create_admin(user: UserCreate, db: Session = Depends(get_db)):
+def create_admin(user: UserCreate, db: Session = Depends(get_db)):  # noqa: B008
     admin = Users(
         username=user.username,
         password=user.password,
@@ -44,7 +44,7 @@ def create_admin(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/create-user/", response_model=UserReturn)
-def create_user(admin_id: int, user: UserCreate, db: Session = Depends(get_db)):
+def create_user(admin_id: int, user: UserCreate, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     users = Users(
@@ -59,7 +59,7 @@ def create_user(admin_id: int, user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/create-librarian/", response_model=UserReturn)
-def create_librarian(admin_id: int, user: UserCreate, db: Session = Depends(get_db)):
+def create_librarian(admin_id: int, user: UserCreate, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     users = Users(
@@ -78,15 +78,23 @@ def create_librarian(admin_id: int, user: UserCreate, db: Session = Depends(get_
 
 
 @router.get("/users-list/", response_model=list[UserReturn])
-def get_users(admin_id: int, db: Session = Depends(get_db)):
+def get_users(admin_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     users = db.query(Users).all()
     return users
 
 
+@router.get("/users-list/{user_id}", response_model=UserReturn)
+def get_user_by_id(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
+    admin_check(admin_id, db)
+
+    users = user_check(user_id, db)
+    return users
+
+
 @router.get("/admins/", response_model=list[UserReturn])
-def get_all_admins(admin_id: int, db: Session = Depends(get_db)):
+def get_all_admins(admin_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     admin = db.query(Users).filter(Users.role == "ADMIN").all()
@@ -94,7 +102,7 @@ def get_all_admins(admin_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/librarians/", response_model=list[UserReturn])
-def get_all_librarians(admin_id: int, db: Session = Depends(get_db)):
+def get_all_librarians(admin_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     librarian = db.query(Users).filter(Users.role == "LIBRARIAN").all()
@@ -102,7 +110,7 @@ def get_all_librarians(admin_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/users/", response_model=list[UserReturn])
-def get_all_users(admin_id: int, db: Session = Depends(get_db)):
+def get_all_users(admin_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = db.query(Users).filter(Users.role == "USER").all()
@@ -113,7 +121,7 @@ def get_all_users(admin_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/delete-user/{user_id}")
-def delete_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def delete_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -127,7 +135,7 @@ def delete_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):
 
 
 @router.patch("/user-to-admin/")
-def user_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def user_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -139,7 +147,7 @@ def user_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db)):
 
 
 @router.patch("/user-to-librarian/")
-def user_to_librarian(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def user_to_librarian(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -154,7 +162,7 @@ def user_to_librarian(admin_id: int, user_id: int, db: Session = Depends(get_db)
 
 
 @router.patch("/librarian-to-admin/")
-def librarian_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def librarian_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -166,7 +174,7 @@ def librarian_to_admin(admin_id: int, user_id: int, db: Session = Depends(get_db
 
 
 @router.patch("/librarian-to-user/")
-def librarian_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def librarian_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -181,7 +189,7 @@ def librarian_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)
 
 
 @router.patch("/admin-to-user/")
-def admin_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def admin_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
@@ -193,7 +201,7 @@ def admin_to_user(admin_id: int, user_id: int, db: Session = Depends(get_db)):
 
 
 @router.patch("/admin-to-librarian/")
-def admin_to_librarian(admin_id: int, user_id: int, db: Session = Depends(get_db)):
+def admin_to_librarian(admin_id: int, user_id: int, db: Session = Depends(get_db)):  # noqa: B008
     admin_check(admin_id, db)
 
     user = user_check(user_id, db)
