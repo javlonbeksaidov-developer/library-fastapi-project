@@ -1,29 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.users_app.models import UserRole, Users
-from app.users_app.schemas import UserCreate, UserReturn
 from database import get_db
 
+from .models import UserRole, Users
+from .schemas import UserCreate, UserReturn
+from .services import admin_check, user_check
+
 router = APIRouter(tags=["Users Management"], prefix="/users")
-
-
-def admin_check(admin_id, db: Session):
-    admin = db.query(Users).filter(Users.id == admin_id).first()
-    if not admin:
-        raise HTTPException(status_code=404, detail="Admin not found")
-    if admin.role != UserRole.ADMIN:
-        raise HTTPException(status_code=401, detail="Not Admin")
-
-    return admin
-
-
-def user_check(user_id, db: Session):
-    user = db.query(Users).filter(Users.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
 
 
 """ POST """

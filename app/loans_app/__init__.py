@@ -1,2 +1,2 @@
-from .models import Loans
-from .router import router as loan_router
+from .models import Loans  # noqa: F401
+from .router import router as loan_router  # noqa: F401

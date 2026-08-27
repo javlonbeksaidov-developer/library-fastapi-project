@@ -1,4 +1,3 @@
-from datetime import datetime
 from enum import Enum
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
@@ -19,8 +18,8 @@ class Loans(Base):  # Kitobni kim olganini saqlaydi.
     id = Column(Integer, primary_key=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.id"), nullable=False)
-    borrowed_at = Column(DateTime, default=datetime.now)
-    returned_at = Column(DateTime, default=None)
+    borrowed_at = Column(DateTime)
+    returned_at = Column(DateTime)
     status = Column(SQLEnum(BookStatus), default=BookStatus.BORROWED, nullable=False)
 
     user = relationship("Users", back_populates="loan")

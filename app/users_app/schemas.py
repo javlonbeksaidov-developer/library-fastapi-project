@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.models import UserRole
+from .models import UserRole
 
 """ USER """
 

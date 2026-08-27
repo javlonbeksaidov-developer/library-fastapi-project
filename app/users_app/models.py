@@ -1,4 +1,3 @@
-
 from enum import Enum
 
 from sqlalchemy import Boolean, Column, Integer, String
