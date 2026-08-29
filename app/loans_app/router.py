@@ -51,8 +51,7 @@ def create_loan_returned(staff_id: int, loan_id: int, db: Session = Depends(get_
     loan.returned_at = NOW
     loan.status = BookStatus.RETURNED
     db.commit()
-    db.refresh(loan)
-    return {"message": "created", "user": {"id": staff.id}, "data": loan}
+    return {"message": "created", "user": {"id": staff.id}, "data": LoanReturn}
 
 
 """ GET """
